@@ -1,0 +1,37 @@
+# As a continuation of the task, the already created custom-nginx-image image will be used.
+# This Stateful set runs the Dockerfile with PVC and some resource limitations.
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: custom-custom-nginx-image-image
+spec:
+  serviceName: "custom-nginx-image"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: custom-nginx-image
+  template:
+    metadata:
+      labels:
+        app: custom-nginx-image
+    spec:
+      containers:
+      - name: custom-nginx-image
+        image: custom-nginx-image:1.19
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/custom-nginx-image
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: custom-nginx-image-pvc
